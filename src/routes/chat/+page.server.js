@@ -1,8 +1,8 @@
 import * as db from "$lib/server/database.js";
 
 /** @type {import("./$types").PageServerLoad} */
-export async function load( {fetch, depends} ) {
-    const messages = db.getMessages();
+export async function load( {depends} ) {
+    const messages = db.getGlobalMessages();
     depends("app:messages");
     return {
         messages,
@@ -12,17 +12,17 @@ export async function load( {fetch, depends} ) {
 /**
  * Sends a message from the user.
  * @param {string} message
- * @returns {number}
+ * @returns {Promise<{result: number}>}
  */
-async function sendMessage(message) {
-    const result = db.sendMessage(message);
+async function sendGlobalMessage(message) {
+    const result = db.sendGlobalMessage(message);
     return {
         result,
     };
 }
 
 export const actions = {
-    sendMessage: async ({ request }) => {
+    sendGlobalMessage: async ({ request }) => {
         const formData = await request.formData();
         const message = formData.get('message');
         //
@@ -32,11 +32,11 @@ export const actions = {
 
         // console.log(data);
         // console.log(message);
-        db.sendMessage(message);
+        db.sendGlobalMessage(message);
         return message;
     },
-    getMessages: async ({ request }) => {
-        const messages = db.getMessages();
+    getGlobalMessages: async () => {
+        const messages = db.getGlobalMessages();
         return {
             messages
         };

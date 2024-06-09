@@ -21,6 +21,14 @@
         newMessage = "";
     }
 
+    /**
+     * Focuses an element
+     * @param {HTMLElement} element
+     */
+    function focus(element) {
+      element.focus();
+    }
+
     const refreshInterval = setInterval(async () => {
         await invalidate("app:messages");
 
@@ -52,7 +60,7 @@
     </tbody>
 </table>
 
-<form method="post" action="?/sendMessage" use:enhance>
-    <input type="text" bind:value={newMessage} name="message" required>
+<form method="post" action="?/sendGlobalMessage" use:enhance>
+    <input type="text" bind:value={newMessage} name="message" required use:focus>
     <button type="submit">send</button>
 </form>

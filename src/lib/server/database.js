@@ -2,25 +2,29 @@ import Database from "better-sqlite3";
 import { read } from "$app/server";
 
 function connectDb() {
+ 
+  try {
+    read("/db/chat.db");
+    return new Database("db/chat.db", { verbose: console.log });
+  }
+  catch {
     const db = new Database("db/chat.db", { verbose: console.log });
-
-    if (!read("/db/chat.db")) {
-        console.log("didn't find db");
-        const stmt = db.prepare(`CREATE TABLE "chat" (message text, unixTime integer)`);
-        stmt.run();
-    }
-    return db
+    console.log("didn't find db");
+    const stmt = db.prepare(`CREATE TABLE "global" (message text, unixTime integer)`);
+    stmt.run();
+    return db;
+  }
 }
 
 /**
  * Gets messages from the database and returns them.
  * @returns {Object.<message: string, unixTime: number>}
  */
-export function getMessages() {
+export function getGlobalMessages() {
     // run only once
     const db = connectDb()
 
-    const msgStmt = db.prepare("SELECT * FROM chat");
+    const msgStmt = db.prepare("SELECT * FROM global");
 
     /** @typedef {{message: string, unixTime: number}} */
     const messages = msgStmt.all();
@@ -37,12 +41,12 @@ export function getMessages() {
  * @param {string} message
  * @returns {number}
  */
-export function sendMessage(message) {
+export function sendGlobalMessage(message) {
     const db = connectDb();
     const currentTime = Date.now();
     console.log(message + " @ " + currentTime);
 
-    const createStmt = db.prepare("INSERT INTO chat VALUES (?, ?)");
+    const createStmt = db.prepare("INSERT INTO global VALUES (?, ?)");
     createStmt.run(message, currentTime);
 
     db.close();
