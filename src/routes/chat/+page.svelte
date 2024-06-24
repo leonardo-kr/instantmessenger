@@ -3,23 +3,16 @@
     import { onDestroy } from "svelte";
     import { invalidate } from "$app/navigation";
     export let data;
+    
+    /** @type {HTMLElement} */
+    let inputElement;
 
-    let parsed = undefined;
-
-    let test = " \n";
     let newMessage = "";
 
-    /**
-     * Handles form submission for sending messages
-     * @param {SubmitEvent} event
-     */
-    async function handleSendMessage(event) {
-        const form = event.target;
-        console.log(form);
-        console.log(newMessage);
-
-        newMessage = "";
-    }
+    // async function focusInputEnhance({ }) {
+    //   inputElement.focus();
+    //   return ({});
+    // }
 
     /**
      * Focuses an element
@@ -27,6 +20,10 @@
      */
     function focus(element) {
       element.focus();
+    }
+
+    function submission() {
+      inputElement.focus();
     }
 
     const refreshInterval = setInterval(async () => {
@@ -61,6 +58,6 @@
 </table>
 
 <form method="post" action="?/sendGlobalMessage" use:enhance>
-    <input type="text" bind:value={newMessage} name="message" required use:focus>
+    <input type="text" bind:value={newMessage} bind:this={inputElement} name="message" required use:focus>
     <button type="submit">send</button>
 </form>
