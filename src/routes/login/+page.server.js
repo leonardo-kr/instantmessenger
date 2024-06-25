@@ -1,28 +1,26 @@
 import * as db from "$lib/server/database.js";
-import { username, loggedIn } from "$lib/store.js";
-import { get } from "svelte/store";
+import { redirect } from "@sveltejs/kit";
 
 export const actions = {
-    login: async ({ request }) => {
+    login: async ({ request, cookies }) => {
         const formData = await request.formData();
         const formUsername = formData.get("username");
         const formPassword = formData.get("password");
 
         if (db.login(formUsername, formPassword)) {
-            loggedIn.set(true);
-            // loggedIn.update((value) => {
-            //     value = true;
-            // });
-            username.set(formUsername);
-            // username.update((value) => {
-            //     value = formUsername;
-            // });
-            console.log("loggedIn");
-            console.log(get(loggedIn));
+            // username = formUsername;
+            // return {username: formUsername};
+            cookies.set("session", formUsername, {
+                path: "/",
+                httpOnly: true,
+                sameSite: "strict",
+                // expire after 1 month
+                maxAge: 60 * 60 * 24 * 30,
+            });
+            redirect(302, "/");
         }
         else {
-            loggedIn.set(false);
-            username.set("");
+            return {username: ""};
         }
     },
     register: async ({ request }) => {
@@ -31,5 +29,7 @@ export const actions = {
         const password = formData.get('password');
 
         db.createUser(username, password);
+        
+        return {username: username};
     }
 }

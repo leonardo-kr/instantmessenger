@@ -1,15 +1,9 @@
 <script>
 	import { page } from '$app/stores';
-	import { loggedIn, username } from "$lib/store.js";
-	import logo from '$lib/images/svelte-logo.svg';
-	import github from '$lib/images/github.svg';
-	import { get } from "svelte/store";
 
-	let localLoggedIn = false;
+    export let data;
 
-	loggedIn.subscribe(() => {
-		localLoggedIn = get(loggedIn);
-	});
+    $: username = data.username;
 </script>
 
 <header>
@@ -30,13 +24,17 @@
 			<li aria-current={$page.url.pathname.startsWith("/chat") ? "page" : undefined}>
 				<a href="/chat">Chat</a>
 			</li>
-			{#if !localLoggedIn}
-				<li aria-current={$page.url.pathname.startsWith("/login") ? "page" : undefined}>
-					<a href="/login">Login</a>
+			{#if username != "" && username != undefined}
+				<li aria-current={$page.url.pathname.startsWith("/dm") ? "page" : undefined}>
+					<a href="/dm">Direct Messages</a>
+				</li>
+
+				<li aria-current={$page.url.pathname.startsWith("/logout") ? "page" : undefined}>
+					<a href="/logout" data-sveltekit-reload>Logout from {username}</a>
 				</li>
 			{:else}
-				<li aria-current={$page.url.pathname.startsWith("/logout") ? "page" : undefined}>
-					<a href="/logout">Logout</a>
+				<li aria-current={$page.url.pathname.startsWith("/login") ? "page" : undefined}>
+					<a href="/login" data-sveltekit-reload>Login</a>
 				</li>
 			{/if}
 

@@ -2,17 +2,14 @@
     import { enhance } from "$app/forms";
     import { onDestroy } from "svelte";
     import { invalidate } from "$app/navigation";
+
+    /** @type {{messages: [{message: string, unixTime: number, username: string}], username: string}} */
     export let data;
-    
+
     /** @type {HTMLElement} */
     let inputElement;
 
     let newMessage = "";
-
-    // async function focusInputEnhance({ }) {
-    //   inputElement.focus();
-    //   return ({});
-    // }
 
     /**
      * Focuses an element
@@ -22,13 +19,8 @@
       element.focus();
     }
 
-    function submission() {
-      inputElement.focus();
-    }
-
     const refreshInterval = setInterval(async () => {
         await invalidate("app:messages");
-
     }, 1_000);
 
     onDestroy(() => {
@@ -41,6 +33,9 @@
 </svelte:head>
 
 <br>
+{#if data.username != "" && data.username != undefined}
+sending messages as {data.username}
+{/if}
 <table>
     <tr>
         <td><h3>message</h3></td>
@@ -51,13 +46,16 @@
 
     {#each data.messages as message}
         <tr>
-            <td>{message.message}</td> <td> {new Date(message.unixTime)} </td>
+            <td>{message.message}</td> <td> {new Date(message.unixTime)} </td> <td>{message.username}</td>
         </tr>
     {/each}
     </tbody>
 </table>
 
+{#if data.username != "" && data.username != undefined}
 <form method="post" action="?/sendGlobalMessage" use:enhance>
+    <input type="hidden" name="username" bind:value={data.username}/>
     <input type="text" bind:value={newMessage} bind:this={inputElement} name="message" required use:focus>
     <button type="submit">send</button>
 </form>
+{/if}

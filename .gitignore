@@ -10,7 +10,7 @@ node_modules
 .output
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-/db
+/db/chat.db
 /.idea
 shell.nix
 eslint.config.js

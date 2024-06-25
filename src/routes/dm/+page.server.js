@@ -2,29 +2,17 @@ import * as db from "$lib/server/database.js";
 
 /** @type {import("./$types").PageServerLoad} */
 export async function load( { depends, cookies } ) {
-    const messages = db.getGlobalMessages();
-    const username = cookies.get("session");
+    const username = cookies.get("session") || "";
+    const availableUsers = db.getUsers(username);
     depends("app:messages");
     return {
-        messages,
+        availableUsers,
         username,
     };
 }
 
-/**
- * Sends a message from the user.
- * @param {string} message
- * @returns {Promise<{result: number}>}
- */
-async function sendGlobalMessage(message) {
-    const result = db.sendGlobalMessage(message);
-    return {
-        result,
-    };
-}
-
 export const actions = {
-    sendGlobalMessage: async ({ request }) => {
+    sendDirectMessage: async ({ request }) => {
         const formData = await request.formData();
         const message = formData.get('message');
         const username = formData.get('username');
@@ -32,8 +20,8 @@ export const actions = {
         db.sendGlobalMessage(message, username);
         return message;
     },
-    getGlobalMessages: async () => {
-        const messages = db.getGlobalMessages();
+    getDirectMessages: async ({ cookies }) => {
+        const messages = db.getDirectMessages(cookies.get("session") || "", "test");
         return {
             messages
         };
