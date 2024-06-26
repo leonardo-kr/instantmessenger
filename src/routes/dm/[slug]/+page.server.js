@@ -5,11 +5,13 @@ export async function load( { depends, cookies, params } ) {
     const username = cookies.get("session") || "";
     const otherUser = params.slug || "";
     const messages = db.getDirectMessages(otherUser, username);
+    const availableUsers = db.getUsers(username);
     depends("app:messages");
-    /** @type {{messages: [string], username: string}} */
+    /** @type {{messages: [string], username: string, availableUsers: [string]}} */
     return {
         messages,
         username,
+        availableUsers,
     };
 }
 
