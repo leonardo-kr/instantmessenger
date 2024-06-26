@@ -92,13 +92,15 @@ export function sendGlobalMessage(message, username) {
 export function getDirectMessages(sender, receiver) {
     const db = connectDb();
 
-    const msgStmt = db.prepare(`SELECT message, users.username, unixTime FROM directMessages, users WHERE sender = (SELECT id FROM users WHERE users.username = ?) 
-        AND receiver = (SELECT id FROM users WHERE users.username = ?)`);
+    const msgStmt = db.prepare(`SELECT * FROM directMessages inner join users on 
+        id = (select id from users where users.username = ?) 
+        and receiver = (select id from users where users.username = ?) 
+        and sender = (select id from users where users.username = ?)`);
 
     /** @typedef {{message: string, receiver: string, unixTime: number}} */
-    const result = msgStmt.all(sender, receiver);
+    const messages = msgStmt.all(sender, receiver, sender);
 
-    return { result };
+    return messages;
 }
 
 /**
@@ -109,13 +111,16 @@ export function getDirectMessages(sender, receiver) {
  */
 export function sendDirectMessage(message, sender, receiver) {
     const db = connectDb();
+    const currentTime = Date.now();
 
-    const sendDmStmt = db.prepare(`INSERT INTO directMessages(sender, receiver, message) VALUES (
+    console.log("test");
+
+    const sendDmStmt = db.prepare(`INSERT INTO directMessages(sender, receiver, message, unixTime) VALUES (
         (SELECT id FROM users WHERE users.username = ?),
         (SELECT id FROM users WHERE users.username = ?),
-        ?)`);
+        ?, ?)`);
 
-    sendDmStmt.run(sender, receiver, message);
+    sendDmStmt.run(sender, receiver, message, currentTime);
 }
 
 /**
