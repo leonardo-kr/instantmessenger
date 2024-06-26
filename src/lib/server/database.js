@@ -92,15 +92,20 @@ export function sendGlobalMessage(message, username) {
 export function getDirectMessages(sender, receiver) {
     const db = connectDb();
 
-    const msgStmt = db.prepare(`SELECT * FROM directMessages inner join users on 
+    const msgStmt = db.prepare(`SELECT message, receiver, unixTime FROM directMessages inner join users on 
         id = (select id from users where users.username = ?) 
         and receiver = (select id from users where users.username = ?) 
         and sender = (select id from users where users.username = ?)`);
 
     /** @typedef {{message: string, receiver: string, unixTime: number}} */
-    const messages = msgStmt.all(sender, receiver, sender);
-
-    return messages;
+    const receivedMessages = msgStmt.all(sender, receiver, sender);
+    
+    /** @typedef {{message: string, receiver: string, unixTime: number}} */
+    const sentMessages = msgStmt.all(receiver, sender, receiver);
+    
+    return receivedMessages.concat(sentMessages).sort((a, b) => {
+        return a.unixTime - b.unixTime; // i don't understand exactly how this works and why it works
+    });
 }
 
 /**
