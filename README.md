@@ -1,9 +1,6 @@
-# development halted (for now)
-
 # instant messenger
 
-it's exactly what it sounds like, although not completed.
-it only works on the web
+it's exactly what it sounds like and only works on the web
 
 ## running dev version
 
