@@ -99,12 +99,18 @@ export function getDirectMessages(sender, receiver) {
 
     /** @typedef {{message: string, receiver: string, unixTime: number}} */
     const receivedMessages = msgStmt.all(sender, receiver, sender);
+    receivedMessages.forEach((elem) => {
+        elem.receiver = "other";
+    });
     
     /** @typedef {{message: string, receiver: string, unixTime: number}} */
     const sentMessages = msgStmt.all(receiver, sender, receiver);
+    sentMessages.forEach((elem) => {
+        elem.receiver = "you";
+    });
     
     return receivedMessages.concat(sentMessages).sort((a, b) => {
-        return a.unixTime - b.unixTime; // i don't understand exactly how this works and why it works
+        return a.unixTime - b.unixTime;
     });
 }
 

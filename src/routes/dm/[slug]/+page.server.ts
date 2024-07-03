@@ -1,4 +1,4 @@
-import * as db from "$lib/server/database.js";
+import * as db from "$lib/server/database";
 
 /** @type {import("./$types").PageServerLoad} */
 export async function load( { depends, cookies, params } ) {

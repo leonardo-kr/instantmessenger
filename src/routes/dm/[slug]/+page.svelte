@@ -21,6 +21,7 @@
     .messenger {
         display: flex;
         flex-direction: row;
+        justify-content: space-around;
     }
     
     .addressbook {
@@ -28,6 +29,29 @@
         display: flex;
         flex-direction: column;
     }
+
+    .messages {
+        flex-grow: 2;
+    }
+
+    .fromOtherMessager {
+        text-align: left;
+    }
+
+    .fromYou {
+        text-align: right;
+    }
+
+    .messages form {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    input[type="text"] {
+        width: 100%;
+    }
+
 </style>
 
 {#if data.username != "" && data.username != undefined}
@@ -44,7 +68,15 @@
 
         <div class="messages">
             {#each data.messages as message}
-                {message.message} <br>
+                {#if message.receiver === "you"}
+                    <div class="fromOtherMessager">
+                        {message.message} <br>
+                    </div>
+                {:else}
+                    <div class="fromYou">
+                        {message.message} <br>
+                    </div>
+                {/if}
             {/each}
 
             <form method="post" action="?/sendDirectMessage" use:enhance>
