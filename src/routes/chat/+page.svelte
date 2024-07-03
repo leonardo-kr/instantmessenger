@@ -33,13 +33,11 @@
 </svelte:head>
 
 <br>
-{#if data.username != "" && data.username != undefined}
-sending messages as {data.username}
-{/if}
 <table>
     <tr>
         <td><h3>message</h3></td>
         <td><h3>date</h3></td>
+        <td><h3>user</h3></td>
     </tr>
 
     <tbody>
@@ -58,4 +56,8 @@ sending messages as {data.username}
     <input type="text" bind:value={newMessage} bind:this={inputElement} name="message" required use:focus>
     <button type="submit">send</button>
 </form>
+{:else}
+<h3>
+    You need to be logged in to send messages.
+</h3>
 {/if}
