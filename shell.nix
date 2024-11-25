@@ -1,7 +1,7 @@
 let
   nixpkgs = builtins.fetchTarball {
         url = "https://github.com/NixOS/nixpkgs/archive/nixos-24.05.tar.gz";
-        sha256 = "0gm7f4nlk49v256ci8dxkggfidn09434piljhq8mphi6x1n91hqr";
+        sha256 = "1n6gdjny8k5rwkxh6sp1iwg1y3ni1pm7lvh9sisifgjb18jdvzbm";
     };
 
     pkgs = import nixpkgs { config = {}; };
